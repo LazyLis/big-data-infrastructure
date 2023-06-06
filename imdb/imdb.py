@@ -36,7 +36,7 @@ def wait():
 
 
 def get_page_results(page_num):
-    count_per_page = 250  # [50, 100, 250]
+    count_per_page = 50  # [50, 100, 250]
     starting_position = 1 + (page_num - 1) * count_per_page
     url = URL_MOVIES_PAGE_TEMPLATE.format(starting_position=starting_position, count_per_page=count_per_page)
 
@@ -53,7 +53,7 @@ def get_page_results(page_num):
 
 
 def get_film_data(title_id):
-    url = URL_MOVIE_API_TEMPLATE.format(title_id)
+    url = URL_MOVIE_API_TEMPLATE.format(title_id=title_id)
     result_film = requests.get(url)
     wait()
     if result_film.status_code != 200:
@@ -65,13 +65,13 @@ def get_film_data(title_id):
     return film_data
 
 
-def get_film_reviews_data(title_id, pages_num=3, film_reviews_data=None, url=None, current_page_num=1):
+def get_film_reviews_data(title_id, pages_num=1, film_reviews_data=None, url=None, current_page_num=0):
     if current_page_num > pages_num:
         return film_reviews_data
 
     if current_page_num == 0:
         film_reviews_data = []
-        url = URL_MOVIE_REVIEWS_API_TEMPLATE.format(title_id)
+        url = URL_MOVIE_REVIEWS_API_TEMPLATE.format(title_id=title_id)
 
     result = requests.get(url)
     if result.status_code != 200:
@@ -79,9 +79,11 @@ def get_film_reviews_data(title_id, pages_num=3, film_reviews_data=None, url=Non
         return film_reviews_data
     wait()
     data = result.json()
+    for review in data['reviews']:
+        review['title_id'] = title_id
     film_reviews_data += data['reviews']
     next_url = f'{API_URL}{data["next_api_path"]}'
-    film_reviews_data = get_film_reviews_data(title_id, film_reviews_data, next_url, current_page_num + 1)
+    film_reviews_data = get_film_reviews_data(title_id, pages_num, film_reviews_data, next_url, current_page_num + 1)
     return film_reviews_data
 
 
