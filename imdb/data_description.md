@@ -27,9 +27,9 @@ Films & reviews data were taken from an [unofficial user-made IMDB API](https://
 For each film, was taken the 100 most "useful" reviews (4 pages per 25).
 
 
-# Data fields (WIP)
+# Data fields
 
-## Film fields (WIP)
+## Film fields
 
 | field                                   | type                       | description                                                               |
 |-----------------------------------------|----------------------------|---------------------------------------------------------------------------|
